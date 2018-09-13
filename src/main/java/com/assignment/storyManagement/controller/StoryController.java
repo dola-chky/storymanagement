@@ -1,13 +1,11 @@
 package com.assignment.storyManagement.controller;
-
 import com.assignment.storyManagement.model.Story;
 import com.assignment.storyManagement.repository.StoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -29,5 +27,38 @@ public class StoryController {
         System.out.println(story.getStoryBody());
         System.out.println(story.getPublishedDate());
         return storyRepository.save(story);
+    }
+
+    // Get a single story
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.GET)
+    public Story getStoryByID(@PathVariable(value = "storyId") Long storyId) {
+        System.out.println(storyId);
+        return storyRepository.findById(storyId)
+                .orElse(null);
+    }
+
+    //Get a single story in plain text format
+    @RequestMapping(value = "story/text/{storyId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getStoryAsText(HttpServletResponse response, @PathVariable(value = "storyId") Long storyId) {
+        Story story = storyRepository.findById(storyId).orElse(null);
+        String str;
+        if(story != null){
+            str = "Title:" + story.getTitle()+","
+                    + "\n"+"Body:" + story.getStoryBody() + ","
+                    + "\n"+"Published Date:"+ story.getPublishedDate();
+            response.setContentType("text/plain");
+        }else{
+            str = "";
+        }
+        response.setCharacterEncoding("UTF-8");
+        return str;
+    }
+
+    //Get a single story in json format
+    @RequestMapping(value = "story/json/{storyId}", method = RequestMethod.GET)
+    public Story getStoryAsJson(@PathVariable(value = "storyId") Long storyId) {
+        Story story = storyRepository.findById(storyId).orElse(null);
+        return story;
     }
 }
