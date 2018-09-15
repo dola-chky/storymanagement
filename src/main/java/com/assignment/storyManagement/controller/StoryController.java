@@ -3,10 +3,12 @@ import com.assignment.storyManagement.model.Story;
 import com.assignment.storyManagement.repository.StoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api")
@@ -60,5 +62,33 @@ public class StoryController {
     public Story getStoryAsJson(@PathVariable(value = "storyId") Long storyId) {
         Story story = storyRepository.findById(storyId).orElse(null);
         return story;
+    }
+
+    // Update a story
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {APPLICATION_JSON_VALUE})
+    public Story updateStory(@PathVariable(value = "storyId") Long storyId,
+                             @RequestBody Story story){
+
+        Story oldStory = storyRepository.findById(storyId)
+                .orElse(null);
+
+        oldStory.setTitle(story.getTitle());
+        oldStory.setStoryBody(story.getStoryBody());
+        oldStory.setPublishedDate(story.getPublishedDate());
+        Story updatedStory = storyRepository.save(oldStory);
+        return updatedStory;
+    }
+
+    // Delete a story
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Story> deleteStory(@PathVariable(value = "storyId") Long storyId) {
+        Story story = storyRepository.findById(storyId)
+                .orElse(null);
+
+        if(story != null){
+            storyRepository.delete(story);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
