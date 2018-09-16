@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequestMapping("/api")
@@ -31,17 +32,8 @@ public class StoryController {
         return storyRepository.save(story);
     }
 
-    // Get a single story
-    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.GET)
-    public Story getStoryByID(@PathVariable(value = "storyId") Long storyId) {
-        System.out.println(storyId);
-        return storyRepository.findById(storyId)
-                .orElse(null);
-    }
-
     //Get a single story in plain text format
-    @RequestMapping(value = "story/text/{storyId}", method = RequestMethod.GET)
-    @ResponseBody
+    @RequestMapping(value = "story/{storyId}", method = RequestMethod.GET, produces = TEXT_PLAIN_VALUE)
     public String getStoryAsText(HttpServletResponse response, @PathVariable(value = "storyId") Long storyId) {
         Story story = storyRepository.findById(storyId).orElse(null);
         String str;
@@ -58,7 +50,7 @@ public class StoryController {
     }
 
     //Get a single story in json format
-    @RequestMapping(value = "story/json/{storyId}", method = RequestMethod.GET)
+    @RequestMapping(value = "story/{storyId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public Story getStoryAsJson(@PathVariable(value = "storyId") Long storyId) {
         Story story = storyRepository.findById(storyId).orElse(null);
         return story;
