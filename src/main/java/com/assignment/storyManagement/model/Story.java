@@ -59,4 +59,14 @@ public class Story {
     public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
     }
+
+    @Override
+    public String toString() {
+        return "Story{" +
+                "storyId=" + storyId +
+                ", title='" + title + '\'' +
+                ", storyBody='" + storyBody + '\'' +
+                ", publishedDate=" + publishedDate +
+                '}';
+    }
 }

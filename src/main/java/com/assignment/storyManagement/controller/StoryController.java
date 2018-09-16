@@ -1,13 +1,16 @@
 package com.assignment.storyManagement.controller;
 import com.assignment.storyManagement.model.Story;
 import com.assignment.storyManagement.repository.StoryRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
+import static com.assignment.storyManagement.Utils.JsonUtil.jsonStringConverter;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 import static org.springframework.util.MimeTypeUtils.TEXT_PLAIN_VALUE;
 
@@ -32,6 +35,13 @@ public class StoryController {
         return storyRepository.save(story);
     }
 
+    //Get a single story in json format
+    @RequestMapping(value = "story/{storyId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public Story getStoryAsJson(@PathVariable(value = "storyId") Long storyId) {
+        Story story = storyRepository.findById(storyId).orElse(null);
+        return story;
+    }
+
     //Get a single story in plain text format
     @RequestMapping(value = "story/{storyId}", method = RequestMethod.GET, produces = TEXT_PLAIN_VALUE)
     public String getStoryAsText(HttpServletResponse response, @PathVariable(value = "storyId") Long storyId) {
@@ -49,27 +59,51 @@ public class StoryController {
         return str;
     }
 
-    //Get a single story in json format
-    @RequestMapping(value = "story/{storyId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public Story getStoryAsJson(@PathVariable(value = "storyId") Long storyId) {
-        Story story = storyRepository.findById(storyId).orElse(null);
-        return story;
-    }
-
-    // Update a story
+    // Update a story by json
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {APPLICATION_JSON_VALUE})
-    public Story updateStory(@PathVariable(value = "storyId") Long storyId,
+    public Story updateStoryByJson(@PathVariable(value = "storyId") Long storyId,
                              @RequestBody Story story){
 
         Story oldStory = storyRepository.findById(storyId)
                 .orElse(null);
 
-        oldStory.setTitle(story.getTitle());
-        oldStory.setStoryBody(story.getStoryBody());
-        oldStory.setPublishedDate(story.getPublishedDate());
-        Story updatedStory = storyRepository.save(oldStory);
-        return updatedStory;
+        if(oldStory != null) {
+            oldStory.setTitle(story.getTitle());
+            oldStory.setStoryBody(story.getStoryBody());
+            oldStory.setPublishedDate(story.getPublishedDate());
+            Story updatedStory = storyRepository.save(oldStory);
+            return updatedStory;
+        }else{
+            return null;
+        }
+
     }
+
+    // Update a story by plain text
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {TEXT_PLAIN_VALUE})
+    public Story updateStoryByText(@PathVariable(value = "storyId") Long storyId,
+                             @RequestBody String story) throws IOException{
+
+        Story updatedStory;
+        String jsonStr = jsonStringConverter(story);
+
+        ObjectMapper mapper = new ObjectMapper();
+        Story newStory = mapper.readValue(jsonStr, Story.class);
+        System.out.println(newStory);
+
+        Story oldStory = storyRepository.findById(newStory.getStoryId()).orElse(null);
+        if(oldStory != null){
+            oldStory.setTitle(newStory.getTitle());
+            oldStory.setStoryBody(newStory.getStoryBody());
+            oldStory.setPublishedDate(newStory.getPublishedDate());
+            updatedStory = storyRepository.save(oldStory);
+            return updatedStory;
+        }else{
+            return null;
+        }
+
+    }
+
 
     // Delete a story
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.DELETE)
