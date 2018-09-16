@@ -26,13 +26,30 @@ public class StoryController {
         return storyRepository.findAll();
     }
 
-    //Create a new story
-    @RequestMapping(value = "/story/", method = RequestMethod.POST)
-    public Story createStory(@RequestBody Story story) {
+    //Create a new story from json request bosy
+    @RequestMapping(value = "/story/", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    public Story createStoryByJson(@RequestBody Story story) {
         System.out.println(story.getTitle());
         System.out.println(story.getStoryBody());
         System.out.println(story.getPublishedDate());
         return storyRepository.save(story);
+    }
+
+    //Create a new story from plain text request body
+    @RequestMapping(value = "/story/", method = RequestMethod.POST,consumes = TEXT_PLAIN_VALUE)
+    public Story createStoryByText(@RequestBody String storyStr) throws IOException{
+        String jsonStr = jsonStringConverter(storyStr);
+        Story newStory = null;
+
+        ObjectMapper mapper = new ObjectMapper();
+        Story story = mapper.readValue(jsonStr, Story.class);
+        System.out.println(story);
+
+        if(story != null){
+            newStory = storyRepository.save(story);
+        }
+        return newStory;
+
     }
 
     //Get a single story in json format
@@ -82,10 +99,10 @@ public class StoryController {
     // Update a story by plain text
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {TEXT_PLAIN_VALUE})
     public Story updateStoryByText(@PathVariable(value = "storyId") Long storyId,
-                             @RequestBody String story) throws IOException{
+                             @RequestBody String storyStr) throws IOException{
 
         Story updatedStory;
-        String jsonStr = jsonStringConverter(story);
+        String jsonStr = jsonStringConverter(storyStr);
 
         ObjectMapper mapper = new ObjectMapper();
         Story newStory = mapper.readValue(jsonStr, Story.class);
