@@ -2,12 +2,15 @@ package com.assignment.storyManagement.controller;
 import com.assignment.storyManagement.model.Story;
 import com.assignment.storyManagement.repository.StoryRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.deploy.net.HttpResponse;
+import javassist.bytecode.stackmap.BasicBlock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 import static com.assignment.storyManagement.Utils.JsonUtil.jsonStringConverter;
@@ -26,29 +29,48 @@ public class StoryController {
         return storyRepository.findAll();
     }
 
-    //Create a new story from json request bosy
+    //Create a new story from json request body
     @RequestMapping(value = "/story/", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    public Story createStoryByJson(@RequestBody Story story) {
+    public ResponseEntity<?> createStoryByJson(@RequestBody Story story, Principal principal) {
+        System.out.println(principal.getName());
+        String createdBy = principal.getName();
+
         System.out.println(story.getTitle());
         System.out.println(story.getStoryBody());
         System.out.println(story.getPublishedDate());
-        return storyRepository.save(story);
+        story.setCreatedBy(createdBy);
+        try{
+            Story newStory = storyRepository.save(story);
+            return new ResponseEntity<Story>(HttpStatus.CREATED);
+        } catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //Create a new story from plain text request body
     @RequestMapping(value = "/story/", method = RequestMethod.POST,consumes = TEXT_PLAIN_VALUE)
-    public Story createStoryByText(@RequestBody String storyStr) throws IOException{
+    public ResponseEntity<?> createStoryByText(@RequestBody String storyStr, Principal principal) throws IOException{
         String jsonStr = jsonStringConverter(storyStr);
         Story newStory = null;
+        String createdBy = principal.getName();
 
         ObjectMapper mapper = new ObjectMapper();
         Story story = mapper.readValue(jsonStr, Story.class);
         System.out.println(story);
 
         if(story != null){
-            newStory = storyRepository.save(story);
+            story.setCreatedBy(createdBy);
+            try{
+                newStory = storyRepository.save(story);
+                return new ResponseEntity<Story>(HttpStatus.CREATED);
+            }catch (Exception e){
+                e.printStackTrace();
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
         }
-        return newStory;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 
@@ -70,7 +92,7 @@ public class StoryController {
                     + "\n"+"Published Date:"+ story.getPublishedDate();
             response.setContentType("text/plain");
         }else{
-            str = "";
+            str = null;
         }
         response.setCharacterEncoding("UTF-8");
         return str;
@@ -78,45 +100,55 @@ public class StoryController {
 
     // Update a story by json
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {APPLICATION_JSON_VALUE})
-    public Story updateStoryByJson(@PathVariable(value = "storyId") Long storyId,
-                             @RequestBody Story story){
+    public ResponseEntity<?> updateStoryByJson(@PathVariable(value = "storyId") Long storyId,
+                                   @RequestBody Story story, Principal principal){
 
         Story oldStory = storyRepository.findById(storyId)
                 .orElse(null);
 
         if(oldStory != null) {
-            oldStory.setTitle(story.getTitle());
-            oldStory.setStoryBody(story.getStoryBody());
-            oldStory.setPublishedDate(story.getPublishedDate());
-            Story updatedStory = storyRepository.save(oldStory);
-            return updatedStory;
+            if(principal.getName().equals(oldStory.getCreatedBy())){
+                oldStory.setTitle(story.getTitle());
+                oldStory.setStoryBody(story.getStoryBody());
+                oldStory.setPublishedDate(story.getPublishedDate());
+                Story updatedStory = storyRepository.save(oldStory);
+                return new ResponseEntity<Story>(HttpStatus.OK);
+            }else{
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+
         }else{
-            return null;
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
     }
 
     // Update a story by plain text
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {TEXT_PLAIN_VALUE})
-    public Story updateStoryByText(@PathVariable(value = "storyId") Long storyId,
-                             @RequestBody String storyStr) throws IOException{
+    public ResponseEntity<?> updateStoryByText(@PathVariable(value = "storyId") Long storyId,
+                             @RequestBody String storyStr, Principal principal) throws IOException{
 
         Story updatedStory;
         String jsonStr = jsonStringConverter(storyStr);
 
         ObjectMapper mapper = new ObjectMapper();
         Story newStory = mapper.readValue(jsonStr, Story.class);
+        newStory.setStoryId(storyId);
         System.out.println(newStory);
 
         Story oldStory = storyRepository.findById(newStory.getStoryId()).orElse(null);
         if(oldStory != null){
-            oldStory.setTitle(newStory.getTitle());
-            oldStory.setStoryBody(newStory.getStoryBody());
-            oldStory.setPublishedDate(newStory.getPublishedDate());
-            updatedStory = storyRepository.save(oldStory);
-            return updatedStory;
+            if(principal.getName().equals(oldStory.getCreatedBy())) {
+                oldStory.setTitle(newStory.getTitle());
+                oldStory.setStoryBody(newStory.getStoryBody());
+                oldStory.setPublishedDate(newStory.getPublishedDate());
+                updatedStory = storyRepository.save(oldStory);
+                return new ResponseEntity<Story>(HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         }else{
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
@@ -124,14 +156,19 @@ public class StoryController {
 
     // Delete a story
     @RequestMapping(value = "/story/{storyId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Story> deleteStory(@PathVariable(value = "storyId") Long storyId) {
+    public ResponseEntity<?> deleteStory(@PathVariable(value = "storyId") Long storyId, Principal principal) {
         Story story = storyRepository.findById(storyId)
                 .orElse(null);
 
         if(story != null){
-            storyRepository.delete(story);
+            if(principal.getName().equals(story.getCreatedBy())) {
+                storyRepository.delete(story);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
         }
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

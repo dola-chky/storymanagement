@@ -26,6 +26,9 @@ public class Story {
     @Column(nullable = false)
     private Date publishedDate;
 
+    @Column(nullable = false)
+    private String createdBy;
+
     public long getStoryId() {
         return storyId;
     }
@@ -58,6 +61,14 @@ public class Story {
     @JsonDeserialize(using= JsonDateDeserializer.class)
     public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
