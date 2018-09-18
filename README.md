@@ -1,7 +1,7 @@
 # storymanagement
 
 This is a story management application.You can create, update and delete stories here. Initially I have created rest api endpoint for create, update and delete.You can create and update a story from both 
-json or plain text format. Third party users can also consume a story in plain text or json format. As the user interface is still in progress you can test the endpoints by using rest client.
+json or plain text format. Third party users can also consume a story in plain text or json format. As the applicationUser interface is still in progress you can test the endpoints by using rest client.
 Follow the instructions below to test the endpoint:
 
 # to get a list of stories
