@@ -89,7 +89,8 @@ public class StoryController {
         if(story != null){
             str = "Title:" + story.getTitle()+","
                     + "\n"+"Body:" + story.getStoryBody() + ","
-                    + "\n"+"Published Date:"+ story.getPublishedDate();
+                    + "\n"+"Published Date:"+ story.getPublishedDate() + ","
+                    + "\n"+"Created By:"+ story.getCreatedBy();
             response.setContentType("text/plain");
         }else{
             str = null;
