@@ -100,7 +100,7 @@ public class StoryController {
     }
 
     // Update a story by json
-    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {APPLICATION_JSON_VALUE})
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateStoryByJson(@PathVariable(value = "storyId") Long storyId,
                                    @RequestBody Story story, Principal principal){
 

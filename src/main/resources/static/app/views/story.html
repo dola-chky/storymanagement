@@ -1,0 +1,69 @@
+<div>
+        <div class="panel panel-default" ng-show="isNewMode">
+            <div class="panel-heading">User</div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form ng-submit="submit()" name="storyForm" novalidate>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error': storyForm.name.$invalid && storyForm.name.$dirty }">
+                            <label for="title">Title:</label> <input type="text" required
+                                                                   class="form-control" ng-model="story.title"
+                                                                   id="title"
+                                                                   name="title">
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error': storyForm.username.$invalid && storyForm.username.$dirty }">
+                            <label for="body">Body:</label> <input type="textArea"
+                                                                           required class="form-control"
+                                                                           ng-model="story.storyBody"
+                                                                           id="body" name="body">
+                        </div>
+
+                        <div class="form-group"
+                             ng-class="{ 'has-error': storyForm.date.$invalid && storyForm.date.$dirty }">
+                            <label for="publishedDate">Published Date:</label> <input type="date"
+                                                                      required class="form-control" id="publishedDate"
+                                                                      ng-model="story.publishedDate" name="publishedDate">
+                        </div>
+                        <button type="submit" class="btn btn-default"
+                                ng-disabled="storyForm.$invalid">{{buttonText}}
+                        </button>
+
+                        <div class="alert alert-info margin-top-5" ng-show="message">{{message}}</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <div ng-hide="isNewMode">
+        <div class="panel panel-default">
+            <h3 ng-if="stories.length > 0"> List of stories </h3>
+            <div class="panel-heading">
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-click="initAddStory()">
+                    <span class="glyphicon glyphicon-plus"></span> Add New Story
+                </button>
+            </div>
+            <div class="panel-body">
+
+                <div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
+                <div ng-repeat="story in stories">
+                    <h4>{{story.title}}</h4>
+                    By <strong>{{story.createdBy}}</strong> on <strong>{{story.publishedDate}}</strong>
+                    <br/>
+                    <br/>
+                    <p>{{story.storyBody}}</p>
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-click="initEdit(story)" ng-if="user.username == story.createdBy">
+                        <span class="glyphicon glyphicon-edit"></span>Edit</button>
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-click="deleteStory(story)" ng-if="user.username == story.createdBy">
+                        <span class="glyphicon glyphicon-trash"></span>Delete</button>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
