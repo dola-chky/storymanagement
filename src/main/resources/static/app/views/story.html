@@ -1,6 +1,6 @@
 <div>
         <div class="panel panel-default" ng-show="isNewMode">
-            <div class="panel-heading">User</div>
+            <div class="panel-heading">Story</div>
             <div class="panel-body">
                 <div class="col-md-12">
                     <form ng-submit="submit()" name="storyForm" novalidate>
@@ -40,7 +40,7 @@
             </div>
         </div>
     <div class="panel panel-default">
-        <div class="panel-heading" ng-hide ="isNewMode">
+        <div class="panel-heading" ng-hide ="isNewMode || user == null">
             <button type="button" class="btn btn-default btn-sm"
                     ng-click="initAddStory()">
                 <span class="glyphicon glyphicon-plus"></span> Add New Story
