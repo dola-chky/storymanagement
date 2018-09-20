@@ -10,13 +10,44 @@ mvn clean install
 
 After successful completion of this command you will get a jar file in project target folder named storyManagement-0.0.1-SNAPSHOT.jar. Double click the jar and you are ready to use the story management application.
 
-
 #To start using application:
 Open you browser and type localhost:8080/
 A login page will appear with 'register' and 'stories' button on upper right side. Using login page you can login. I have two default user named 'admin' and 'user'. Password for 'admin' is 'admin' and password for 'user' is 'user'.
 After successful login you will be taken to your home page.From home page you can explore the story listing.
 You can register a new user by clicking 'register' button. After successful registration you will be redirected to login page.
 By clicking stories button on upper right side you can view the story listing without logging in.
+
+#Login Page:
+
+![login page](img/login.jpg)
+
+#Registration Page:
+
+![registration page](img/registration.jpg)
+
+#Home Page:
+
+![home page](img/homepage.jpg)
+
+#Story List Without Login
+
+![story without login](img/storylist_without_login.jpg)
+
+#Story List
+
+![story list 1](img/storylist1.jpg)
+
+#Story List
+
+![story list 2](img/storylist2.jpg)
+
+#Adding New Story
+
+![add new story](img/addstory.jpg)
+
+#Updating Story
+![edit story](img/editstory.jpg)
+
 
 #Follow the instructions below to test the endpoint using advanced rest client or postman.:
 
