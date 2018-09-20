@@ -1,8 +1,8 @@
 angular.module('myApp')
-// Creating the Angular Controller
     .controller('StoryController', function ($http, $scope, $filter, AuthService) {
         var edit = false;
         $scope.buttonText = 'Create';
+        $scope.stories = [];
         var init = function () {
             $http.get('api/stories').success(function (res) {
                 var stories = res;
@@ -12,6 +12,10 @@ angular.module('myApp')
                 });
 
                 $scope.stories = stories;
+                $scope.filteredStories = [];
+                $scope.currentPage = 1;
+                $scope.maxSize = Math.ceil(($scope.stories.length)/5);
+                $scope.figureOutStoriesToDisplay();
                 $scope.user = AuthService.user;
                 $scope.storyForm.$setPristine();
                 $scope.message = '';
@@ -24,13 +28,22 @@ angular.module('myApp')
                 $scope.message = error.message;
             });
         };
+
+        $scope.figureOutStoriesToDisplay = function() {
+            var begin = (($scope.currentPage - 1) * 5);
+            var end = begin + 5;
+            $scope.filteredStories = $scope.stories.slice(begin, end);
+        };
+
+        $scope.pageChanged = function() {
+            $scope.figureOutStoriesToDisplay();
+        };
+
         $scope.initEdit = function (story) {
             edit = true;
             $scope.isNewMode = true;
             $scope.story = story;
             var publishedDate = new Date(story.publishedDate);
-            console.log(publishedDate);
-            //var dateStr = $filter('date')(publishedDate,'MM/dd/yyyy');
             $scope.story.publishedDate = publishedDate;
             $scope.message = '';
             $scope.buttonText = 'Update';
@@ -77,6 +90,10 @@ angular.module('myApp')
             } else {
                 addStory();
             }
+        };
+
+        $scope.cancel = function () {
+            $scope.isNewMode = false;
         };
         init();
 

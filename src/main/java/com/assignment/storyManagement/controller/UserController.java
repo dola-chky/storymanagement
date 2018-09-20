@@ -19,14 +19,9 @@ public class UserController {
 
     @Autowired
     private ApplicationUserRepository applicationUserRepository;
-   /* private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserController(ApplicationUserRepository applicationUserRepository,
-                          BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.applicationUserRepository = applicationUserRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }*/
-
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -34,6 +29,10 @@ public class UserController {
         if (applicationUserRepository.findByUsername(appUser.getUsername()) != null) {
             throw new RuntimeException("Username already exist");
         }
+
+        /*removed password encoding part as I want to insert some data manually*/
+        /*appUser.setPassword(bCryptPasswordEncoder.encode(appUser.getPassword()));*/
+
         return new ResponseEntity<ApplicationUser>(applicationUserRepository.save(appUser), HttpStatus.CREATED);
     }
 
@@ -43,6 +42,8 @@ public class UserController {
         String token = null;
         ApplicationUser appUser = applicationUserRepository.findByUsername(username);
         Map<String, Object> tokenMap = new HashMap<String, Object>();
+
+        /*System.out.println(bCryptPasswordEncoder.matches(password, appUser.getPassword()));*/
         if (appUser != null && appUser.getPassword().equals(password)) {
             token = Jwts.builder().setSubject(username).setIssuedAt(new Date())
                     .signWith(SignatureAlgorithm.HS256, "secretkey").compact();

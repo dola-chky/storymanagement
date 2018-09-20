@@ -1,5 +1,4 @@
 angular.module('myApp')
-// Creating the Angular Controller
     .controller('NavController', function ($http, $scope, AuthService, $state, $rootScope) {
         $scope.$on('LoginSuccessful', function () {
             $scope.user = AuthService.user;

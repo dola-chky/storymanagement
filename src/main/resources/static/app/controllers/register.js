@@ -1,5 +1,4 @@
 angular.module('myApp')
-// Creating the Angular Controller
     .controller('RegisterController', function ($http, $scope, $state, AuthService) {
         $scope.submit = function () {
             $http.post('register', $scope.appUser).success(function (res) {

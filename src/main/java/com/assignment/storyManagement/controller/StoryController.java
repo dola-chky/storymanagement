@@ -125,7 +125,7 @@ public class StoryController {
     }
 
     // Update a story by plain text
-    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = {TEXT_PLAIN_VALUE})
+    @RequestMapping(value = "/story/{storyId}", method = RequestMethod.PUT, consumes = TEXT_PLAIN_VALUE)
     public ResponseEntity<?> updateStoryByText(@PathVariable(value = "storyId") Long storyId,
                              @RequestBody String storyStr, Principal principal) throws IOException{
 
