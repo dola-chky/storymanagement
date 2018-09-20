@@ -2,16 +2,18 @@
 
 This is a story management application.You can create, update and delete stories here. Initially I have created rest api endpoint for create, update and delete.You can create and update a story from both 
 json or plain text format. Third party users can also consume a story in plain text or json format. the list of stories is visible to everyone.But only registered and logged in users can create, update and delete stories. A user can only update and delete stories created by self.You can test the endpoints by using rest client.
+Later I have added a client application with angularJs to consume the rest api. You can access stories through user interface. There is also registration and login options. Only a logged in user will be able to create, update and delete stories.
 
 #Installation and setup instruction:
 Clone down the repository. You will need jdk 1.8 or higher, maven and intellijIdea. I have used h2 in memory databse, so there is no need to install a database.
-Go to intelliIdea file menu and select new project from existing source. Create the project as maven project. WHen the project is ready, open intellij terminal and run the following command:
+Go to intelliIdea file menu and select new project from existing source. Create the project as maven project. When the project is ready, open intellij terminal and run the following command:
 mvn clean install
 
-After successful completion of this command you will get a jar file in project target folder named storyManagement-0.0.1-SNAPSHOT.jar. Double click the jar and you are ready to use the story management application.
+After successful completion of this command you will get a jar file in project target folder. Double click the jar and you are ready to use the story management application.
 
 #To start using application:
-Open you browser and type localhost:8080/
+Open you browser and type localhost:8080
+
 A login page will appear with 'register' and 'stories' button on upper right side. Using login page you can login. I have two default user named 'admin' and 'user'. Password for 'admin' is 'admin' and password for 'user' is 'user'.
 After successful login you will be taken to your home page.From home page you can explore the story listing.
 You can register a new user by clicking 'register' button. After successful registration you will be redirected to login page.
@@ -29,27 +31,31 @@ By clicking stories button on upper right side you can view the story listing wi
 
 ![home page](img/homepage.jpg)
 
-#Story List Without Login
+#Story List Without Login:
+Without login create, edit and delete buttons are not visible.
 
 ![story without login](img/storylist_without_login.jpg)
 
-#Story List
+#Story List:
+After login create button is visible for all user, but edit and delete button is available only for self created stories by user.
 
 ![story list 1](img/storylist1.jpg)
 
-#Story List
+#Story List:
+The list page has navigation and a page contain maximum five stories.
 
 ![story list 2](img/storylist2.jpg)
 
-#Adding New Story
+#Adding New Story:
 
 ![add new story](img/addstory.jpg)
 
-#Updating Story
+#Updating Story:
+
 ![edit story](img/editstory.jpg)
 
 
-#Follow the instructions below to test the endpoint using advanced rest client or postman.:
+#Follow the instructions below to test the endpoint using advanced rest client or postman:
 
 #to register a new user
 URL: /register
