@@ -17,7 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
 
         web.ignoring()
-                .antMatchers("/", "/index.html", "/app/**", "/register", "/authenticate", "/favicon.ico", "/h2-console/**","/story","/api/stories");
+                .antMatchers("/", "/index.html", "/app/**", "/register", "/authenticate", "/favicon.ico", "/h2-console/**","/story","/api/stories", "/api/stories/search/**");
     }
 
     @Override

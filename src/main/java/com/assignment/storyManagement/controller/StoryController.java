@@ -27,6 +27,12 @@ public class StoryController {
         return storyRepository.findAll();
     }
 
+    // Get stories by title
+    @RequestMapping(value = "/stories/search/{title}", method = RequestMethod.GET)
+    public List<Story> getAllStoriesByTitle(@PathVariable(value = "title") String title) {
+        return storyRepository.findByTitle(title);
+    }
+
     //Create a new story from json request body
     @RequestMapping(value = "/story/", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createStoryByJson(@RequestBody Story story, Principal principal) {

@@ -40,19 +40,28 @@
             </div>
         </div>
     <div class="panel panel-default">
-        <div class="panel-heading" ng-hide ="isNewMode || user == null">
-            <button type="button" class="btn btn-default btn-sm"
-                    ng-click="initAddStory()">
-                <span class="glyphicon glyphicon-plus"></span> Add New Story
-            </button>
+        <div class="panel-heading">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-hide ="isNewMode || user == null"
+                        ng-click="initAddStory()">
+                    <span class="glyphicon glyphicon-plus"></span> Add New Story
+                </button>
+            </div>
+            <div class="btn-group pull-right">
+                <input type="text" placeholder="Search by title" name="searchTitle" ng-model="searchTitle" ng-hide="isNewMode">
+                <button type="button" ng-hide="isNewMode" ng-click="search(searchTitle)"><i class="fa fa-search"></i></button>
+            </div>
         </div>
         <div class="panel panel-default" ng-hide="isNewMode">
-            <h3 ng-if="stories.length > 0"> List of stories </h3>
-            <div class="panel-body">
+            <div class="panel-heading" ng-if="filteredStories .length > 0">
+                <strong>List of stories</strong>
+            </div>
+            <div class="panel-body" ng-if="filteredStories .length > 0">
 
                 <div class="alert alert-info margin-top-5" ng-show="deleteMessage">{{deleteMessage}}</div>
                 <div ng-repeat="story in filteredStories|orderBy: 'publishedDate':true" >
-                    <h4>{{story.title}}</h4>
+                    <h5><strong>{{story.title}}</strong></h5>
                     By <strong>{{story.createdBy}}</strong> on <strong>{{story.publishedDate}}</strong>
                     <br/>
                     <br/>
@@ -66,13 +75,15 @@
                     <br/>
                     <br/>
                 </div>
-                <pagination boundary-links="true"
+                <pagination
+                            boundary-links="true"
                             max-size="maxSize"
                             items-per-page="5"
                             total-items="stories.length"
                             ng-model="currentPage"
                             ng-change="pageChanged()"></pagination>
             </div>
+            <div ng-style="{'background-color':blue}" ng-if="filteredStories.length == 0"><strong> No stories found </strong></div>
         </div>
     </div>
 </div>

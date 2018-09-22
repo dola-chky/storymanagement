@@ -3,6 +3,7 @@ angular.module('myApp')
         var edit = false;
         $scope.buttonText = 'Create';
         $scope.stories = [];
+        $scope.searchTitle = "";
         var init = function () {
             $http.get('api/stories').success(function (res) {
                 var stories = res;
@@ -84,6 +85,22 @@ angular.module('myApp')
                 $scope.message = error.message;
             });
         };
+        $scope.search = function (searchTitle) {
+            if(searchTitle == null || searchTitle == ""){
+                $scope.message = "please enter a title";
+                alert("Please enter a title")
+                return;
+            }
+            $http.get('api/stories/search/'+searchTitle).success(function (res) {
+                var stories = res;
+                $scope.stories = stories;
+                $scope.filteredStories = [];
+                $scope.currentPage = 1;
+                $scope.maxSize = Math.ceil(($scope.stories.length)/5);
+                $scope.figureOutStoriesToDisplay();
+            })
+        };
+
         $scope.submit = function () {
             if (edit) {
                 editStory($scope.story);
