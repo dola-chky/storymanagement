@@ -54,6 +54,12 @@ The list page has navigation and a page contain maximum five stories.
 
 ![edit story](img/editstory.jpg)
 
+# Searching story by title
+
+![search story 1](img/storyByTitle1.jpg)
+
+
+![search story 2](img/storyByTitle2.jpg)
 
 #Follow the instructions below to test the endpoint using advanced rest client or postman:
 
@@ -87,8 +93,10 @@ URl: /api/stories
 
 Method: GET
 
-Request Header: authorization:
-                Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkb2xhIiwiZXhwIjoxNTM4MTIzNjY5fQ.KUBubUL7enJy5dBgU88joFACKfvwFnVdwqruA4bvG75qo90hDvW6VWMWuN9VxTQ5pUexKvH3VRQonVxp3ffVAg
+
+# to search a story by title
+URL: /api/stories/search/{title}
+Method: GET
 
 # to create a new story from json format
 URL: /api/story/
