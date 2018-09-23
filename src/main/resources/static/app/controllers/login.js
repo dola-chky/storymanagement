@@ -1,14 +1,13 @@
 angular.module('myApp')
     .controller('LoginController', function ($http, $scope, $state, AuthService, $rootScope) {
         $scope.login = function () {
-            $http({
-                url: '/authenticate',
-                method: "POST",
-                params: {
-                    username: $scope.username,
-                    password: $scope.password
-                }
-            }).success(function (res) {
+
+            var data = {
+                username: $scope.username,
+                password: $scope.password
+            };
+
+            $http.post('authenticate', data).success(function (res) {
                 $scope.password = null;
                 if (res.token) {
                     $scope.message = '';

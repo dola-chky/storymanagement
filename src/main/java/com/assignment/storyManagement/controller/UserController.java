@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -37,13 +36,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> login(@RequestParam String username, @RequestParam String password,
-                                                     HttpServletResponse response) throws IOException {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> userMap) throws IOException {
+        String username = userMap.get("username");
+        String password = userMap.get("password");
+
         String token = null;
         ApplicationUser appUser = applicationUserRepository.findByUsername(username);
         Map<String, Object> tokenMap = new HashMap<String, Object>();
 
-        /*System.out.println(bCryptPasswordEncoder.matches(password, appUser.getPassword()));*/
         if (appUser != null && appUser.getPassword().equals(password)) {
             token = Jwts.builder().setSubject(username).setIssuedAt(new Date())
                     .signWith(SignatureAlgorithm.HS256, "secretkey").compact();
