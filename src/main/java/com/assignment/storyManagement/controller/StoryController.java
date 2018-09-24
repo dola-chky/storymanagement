@@ -180,7 +180,7 @@ public class StoryController {
 
     private String getLoggedInUser(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String createdBy = auth.getName();
-        return createdBy;
+        String userName = auth.getName();
+        return userName;
     }
 }

@@ -75,7 +75,7 @@ Request Body Example:
 {"username":"dola","password":"123456"}
 
 #to login a user
-URL: /authenticate?username=username&password=password
+URL: /authenticate
 
 Method: POST
 
